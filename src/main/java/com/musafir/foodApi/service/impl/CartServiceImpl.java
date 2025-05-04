@@ -59,4 +59,15 @@ public class CartServiceImpl implements CartService {
         return mapper.map(cartRepo.save(cart),CartResponse.class);
 
     }
+
+    @Override
+    public CartResponse deleteFullItemFromCart(String foodId) {
+        String loggedInUserId = userService.findByUserId().getEmail();
+        CartEntity cart = cartRepo.findByUserId(loggedInUserId).orElseThrow(() -> new RuntimeException("Cart not found"));
+        Map<String, Integer> items = cart.getItems();
+        items.remove(foodId);
+        cart.setItems(items);
+        return mapper.map(cartRepo.save(cart),CartResponse.class);
+
+    }
 }

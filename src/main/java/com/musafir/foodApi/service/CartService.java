@@ -8,4 +8,6 @@ public interface CartService {
     CartResponse getCart();
     void deleteCart();
     CartResponse removeFromCart(CartRequest request);
+    CartResponse deleteFullItemFromCart(String foodId);
+
 }

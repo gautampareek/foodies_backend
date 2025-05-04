@@ -32,7 +32,18 @@ public class JwtFilter extends OncePerRequestFilter {
         }
 
         token = authHeader.substring(7);
-        email = jwtUtil.extractEmail(token);
+        try {
+            email = jwtUtil.extractEmail(token);
+        }
+        catch (io.jsonwebtoken.ExpiredJwtException e) {
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.getWriter().write("Token has expired");
+            return;
+        } catch (io.jsonwebtoken.JwtException e) {
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.getWriter().write("Invalid JWT token");
+            return;
+        }
 
         if (email != null && SecurityContextHolder.getContext().getAuthentication() == null) {
             UserDetails userDetails = userDetailsService.loadUserByUsername(email);

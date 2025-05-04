@@ -40,4 +40,8 @@ public class CartController {
         return ResponseEntity.ok(cartService.removeFromCart(request));
 
     }
+    @DeleteMapping("/removeItem/{id}")
+    public ResponseEntity<CartResponse> removeFullItemFromCart(@PathVariable String id){
+        return ResponseEntity.ok(cartService.deleteFullItemFromCart(id));
+    }
 }

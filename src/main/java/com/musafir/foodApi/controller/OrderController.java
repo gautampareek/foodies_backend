@@ -19,12 +19,15 @@ public class OrderController {
 
     @PostMapping("/create")
     public ResponseEntity<OrderResponse> createOrder(@RequestBody OrderRequest request){
+        System.out.println("this is the request"+request);
         OrderResponse orderWithPayment = orderService.createOrderWithPayment(request);
-        return new ResponseEntity<>(orderWithPayment, HttpStatus.CREATED);
+        return new ResponseEntity<>(orderWithPayment, HttpStatus.OK);
     }
-    @GetMapping("/verify")
-    public void verifyOrder(@RequestBody Map<String,String> paymentData){
+    @PostMapping("/verify")
+    public ResponseEntity<?> verifyOrder(@RequestBody Map<String,String> paymentData){
+        System.out.println("This the verify request"+paymentData);
         orderService.verifyPayment(paymentData,"paid");
+        return ResponseEntity.ok("Verified");
     }
     @GetMapping
     public List<OrderResponse> getOrders(){

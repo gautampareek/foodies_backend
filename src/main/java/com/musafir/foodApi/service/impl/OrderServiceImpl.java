@@ -13,6 +13,7 @@ import com.razorpay.Order;
 import com.razorpay.RazorpayClient;
 import com.razorpay.RazorpayException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.json.JSONObject;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Value;
@@ -23,6 +24,7 @@ import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class OrderServiceImpl implements OrderService {
     private final OrderRepo orderRepo;
     private final ModelMapper modelMapper;
@@ -36,6 +38,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public OrderResponse createOrderWithPayment(OrderRequest request) {
+        log.info("recieved order request {}",request );
         OrderEntity requestOrder = modelMapper.map(request, OrderEntity.class);
         OrderEntity savedOrder = orderRepo.save(requestOrder);
         //payment part here
@@ -45,7 +48,7 @@ public class OrderServiceImpl implements OrderService {
             client = new RazorpayClient(RAZORPAY_KEY,RAZORPAY_SECRET);
 
         JSONObject orderRequest = new JSONObject();
-        orderRequest.put("amount",savedOrder.getAmount());
+        orderRequest.put("amount", (int)(savedOrder.getAmount() * 100));
         orderRequest.put("currency","INR");
         orderRequest.put("payment_capture",1);
 
